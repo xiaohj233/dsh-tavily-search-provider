@@ -70,6 +70,8 @@ dsh plugin --profile web remove dsh-tavily-search-provider
 
 If a legacy or foreign edit is reported, reinstall the official DSH package rather than forcing a fuzzy restoration.
 
+`dsh-keepalive` patches the same `dsh-host-apiproxy` allowlist region with a different anchor. When both plugins are installed, whichever one patches second finds its anchor already consumed and refuses, so its settings card stays unavailable until the other plugin's patch is restored. Restores remain marker-scoped and safe in either order.
+
 ## Safety and privacy
 
 The Tavily API receives the query and enabled search controls. `include_raw_content` can return substantially more third-party page content into model context. Domain filters are search constraints, not a content-safety boundary. Review Tavily's data handling and account limits.
