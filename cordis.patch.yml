@@ -1,0 +1,14 @@
+# dsh-tavily-search-provider bundle patch: insert the plugin row so the loader
+# activates this entry. client-modules then composes the client bundle (declared
+# by dsh.client in package.json) into the boot manifest served as
+# window.__DSH_BOOT__. The plugin registers the `tavily_search` tool on ctx.tools
+# (key resolved per call from TAVILY_API_KEY), plus — while the settings switch
+# "replaceOfficialSearch" is on — a "tavily" search provider in ctx.web that the
+# official web_search tool routes through. webServer backs the
+# /api/tavily-search-provider/status endpoint (same extension pattern as
+# dsh-keepalive). Removing the plugin from the profile's bundles reverts
+# everything.
+- insert:
+    - id: tavily-search-provider
+      name: 'dsh-tavily-search-provider'
+      inject: [tools, credentials, web, webServer]

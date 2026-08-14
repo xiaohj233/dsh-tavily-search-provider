@@ -1,0 +1,60 @@
+{
+  "name": "dsh-tavily-search-provider",
+  "version": "0.2.0",
+  "description": "Tavily search provider for DSH with full search-control mapping, credential-backed key UI, and guarded rc.6 compatibility patches.",
+  "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "dsh-tavily-search-provider": "bin/restore.mjs"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "cordis.patch.yml",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./installed-patches": "./lib/installed-patches.mjs",
+    "./boot": "./lib/boot.mjs",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "check": "node --check lib/index.js && node --check lib/client.js && node --check lib/search.mjs && node --check lib/installed-patches.mjs && node --check lib/boot.mjs && node --check bin/restore.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-credentials": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-settings": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-web": "0.1.0-rc.6",
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "react": "^18.2.0"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaohj233/dsh-tavily-search-provider.git"
+  },
+  "homepage": "https://github.com/xiaohj233/dsh-tavily-search-provider#readme",
+  "bugs": {
+    "url": "https://github.com/xiaohj233/dsh-tavily-search-provider/issues"
+  }
+}
