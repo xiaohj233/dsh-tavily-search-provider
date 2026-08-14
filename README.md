@@ -1,5 +1,7 @@
 # dsh-tavily-search-provider
 
+English | [中文](README.zh.md)
+
 **Status: Feature Plugin with Compatibility Patch. Tested only with DeepSeek Harness 0.1.0-rc.6.**
 
 `dsh-tavily-search-provider` registers a standalone `tavily_search` tool and an optional Tavily backend for DSH's official `web_search` tool. Both paths map the full supported Tavily search parameter surface. The Plugins settings card includes a write-only `TAVILY_API_KEY` control backed by DSH credentials.
@@ -72,7 +74,7 @@ When `$DSH_HOME` is unset the profile lives under the home directory (POSIX: `~/
 
 If a legacy or foreign edit is reported, reinstall the official DSH package rather than forcing a fuzzy restoration.
 
-`dsh-keepalive` patches the same `dsh-host-apiproxy` allowlist region with a different anchor. When both plugins are installed, whichever one patches second finds its anchor already consumed and refuses, so its settings card stays unavailable until the other plugin's patch is restored. Restores remain marker-scoped and safe in either order.
+`dsh-keepalive` inserts its allowlist row at the top of the same array, so the two patches no longer share an anchor: both plugins can be installed in either order, and each restore keeps the other plugin's row.
 
 ## Safety and privacy
 

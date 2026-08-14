@@ -1,5 +1,7 @@
 # dsh-tavily-search-provider（Tavily 搜索提供方）
 
+[English](README.md) | 中文
+
 **状态：** Feature Plugin with Compatibility Patch（特性插件 + 兼容补丁）。仅针对 DeepSeek Harness 0.1.0-rc.6 测试过。
 
 `dsh-tavily-search-provider` 注册一个独立的 `tavily_search` 工具，并为 DSH 的官方 `web_search` 工具提供一个可选的 Tavily 后端。两条路径都完整映射了受支持的 Tavily 搜索参数面。Plugins 设置卡片中有一个由 DSH 凭据支撑的只写 `TAVILY_API_KEY` 控件。
@@ -72,7 +74,7 @@ dsh plugin --profile web remove dsh-tavily-search-provider
 
 如果报告存在遗留或外部编辑，请重新安装官方 DSH 包，而不要强行进行模糊还原。
 
-`dsh-keepalive` 使用不同的锚点修补同一 `dsh-host-apiproxy` 允许列表区域。当两个插件都安装时，后打补丁的那个会发现自己的锚点已被占用而拒绝执行，因此它的设置卡片在另一个插件的补丁被还原之前一直不可用。还原操作保持以标记为作用域（marker-scoped），且无论执行顺序如何都是安全的。
+`dsh-keepalive` 会在同一数组的**顶部**插入它的允许列表行，因此两个补丁不再共享锚点：两个插件可以任意顺序安装，各自的还原操作都会保留对方的行。
 
 ## 安全与隐私
 

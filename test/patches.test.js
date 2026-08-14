@@ -354,6 +354,29 @@ test("restore is strict: a version-mismatched target is refused and left untouch
 	}
 });
 
+test("coexists with dsh-keepalive's head row: the tail anchor still matches", () => {
+	const { sandbox, packageRoot } = sandboxPackage("dsh-host-apiproxy-0.1.0-rc.6", "@deepseek-ai/dsh-host-apiproxy");
+	try {
+		/* dsh-keepalive v0.2.1 inserts its allowlist row at the TOP of the
+		 * array; the official tail (`web-search-deepseek`, `];`) must remain
+		 * intact so this plugin's tail anchor still matches. */
+		const withKeepaliveHead = cleanFile("dsh-host-apiproxy-0.1.0-rc.6").replace('= [\n\t"agent-loop",', '= [\n\t"keepalive", // dsh-keepalive: keep-alive watchdog configuration card\n\t"agent-loop",');
+		writeFileSync(join(packageRoot, "lib", "index.js"), withKeepaliveHead, "utf8");
+		const env = envOf(["@deepseek-ai/dsh-host-apiproxy", packageRoot]);
+		const outcome = applyTarget("host-apiproxy", env);
+		assert.equal(outcome.action, "applied");
+		const appliedFile = fileOf(env, "host-apiproxy");
+		assert.ok(appliedFile.includes('"dsh-tavily-search-provider"'), "Tavily row is appended at the tail");
+		assert.ok(appliedFile.includes('"keepalive", // dsh-keepalive'), "keepalive's head row survives");
+		assert.equal(appliedFile.split('"keepalive", // dsh-keepalive').length - 1, 1, "no duplicate keepalive row");
+		const restored = restoreTarget("host-apiproxy", env);
+		assert.equal(restored.action, "restored");
+		assert.equal(fileOf(env, "host-apiproxy"), withKeepaliveHead, "restore keeps keepalive's head row and removes only our tail row");
+	} finally {
+		rmSync(sandbox, { recursive: true, force: true });
+	}
+});
+
 test("restore refuses when the inserted text occurs more than once (non-canonical layout)", () => {
 	const { sandbox, packageRoot } = sandboxPackage("dsh-tool-web-0.1.0-rc.6", "@deepseek-ai/dsh-tool-web");
 	try {
