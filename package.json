@@ -1,6 +1,6 @@
 {
   "name": "dsh-tavily-search-provider",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Tavily search provider for DSH with full search-control mapping, credential-backed key UI, and guarded rc.6 compatibility patches.",
   "type": "module",
   "main": "lib/index.js",
@@ -32,7 +32,14 @@
     },
     "client": {
       "platform": "web",
-      "immediately": true
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-locale"
+      ]
     }
   },
   "engines": {
