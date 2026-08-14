@@ -1,6 +1,6 @@
 {
   "name": "dsh-tavily-search-provider",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Tavily search provider for DSH with full search-control mapping, credential-backed key UI, and guarded rc.6 compatibility patches.",
   "type": "module",
   "main": "lib/index.js",
@@ -12,6 +12,7 @@
     "bin",
     "cordis.patch.yml",
     "README.md",
+    "README.zh.md",
     "THIRD_PARTY_NOTICES.md"
   ],
   "exports": {

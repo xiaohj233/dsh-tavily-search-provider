@@ -29,11 +29,11 @@ Exact targets:
 - `@deepseek-ai/dsh-tool-web@0.1.0-rc.6`: declares and forwards `search_depth`, `topic`, `time_range`, `max_results`, `include_domains`, `exclude_domains`, `include_answer`, and `include_raw_content`.
 - `@deepseek-ai/dsh-host-apiproxy@0.1.0-rc.6`: adds only `dsh-tavily-search-provider` to the Web settings namespace allowlist.
 
-Version mismatch, missing or duplicate anchors, partial edits, and the legacy `dsh-web-search-tavily` allowlist row are refused without writes. Apply and restore are idempotent; file replacements use temporary files and rename.
+Version policy is adaptive by default: a copy whose installed version differs from `0.1.0-rc.6` is still patched when every anchor matches uniquely (recorded as an adaptive match), and skipped with a reason when anchors drifted; a strict programmatic mode restores the old exact-version-only apply behavior. One drifted, foreign, or legacy target never blocks the other, and patch application never throws during boot. Restore remains strictly version-guarded in every mode. Apply and restore are idempotent; file replacements use temporary files and rename.
 
 ## Compatibility
 
-Requires DeepSeek Harness `0.1.0-rc.6`, Node.js `^22.19.0 || >=24`, pnpm `>=10`, and a Tavily API key. Other DSH versions are intentionally refused by the patch engine.
+Requires DeepSeek Harness `0.1.0-rc.6`, Node.js `^22.19.0 || >=24`, pnpm `>=10`, and a Tavily API key. After an upstream upgrade, run `dsh-tavily-search-provider status` once to confirm every target is either applied or intentionally skipped.
 
 ## Install
 
