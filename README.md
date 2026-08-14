@@ -56,17 +56,19 @@ The card also controls `replaceOfficialSearch` and `searchMaxResults`. `autoAppl
 Run the installed CLI from the profile:
 
 ```sh
-pnpm --dir ~/.dsh/profiles/web exec dsh-tavily-search-provider status
-pnpm --dir ~/.dsh/profiles/web exec dsh-tavily-search-provider apply
-pnpm --dir ~/.dsh/profiles/web exec dsh-tavily-search-provider restore
+pnpm --dir "$DSH_HOME/profiles/web" exec dsh-tavily-search-provider status
+pnpm --dir "$DSH_HOME/profiles/web" exec dsh-tavily-search-provider apply
+pnpm --dir "$DSH_HOME/profiles/web" exec dsh-tavily-search-provider restore
 ```
 
 Restore before uninstalling:
 
 ```sh
-pnpm --dir ~/.dsh/profiles/web exec dsh-tavily-search-provider restore
+pnpm --dir "$DSH_HOME/profiles/web" exec dsh-tavily-search-provider restore
 dsh plugin --profile web remove dsh-tavily-search-provider
 ```
+
+When `$DSH_HOME` is unset the profile lives under the home directory (POSIX: `~/.dsh/profiles/web`; Windows PowerShell: `%USERPROFILE%\.dsh\profiles\web`); on Windows pass the resolved path to `pnpm --dir` instead of `~`.
 
 If a legacy or foreign edit is reported, reinstall the official DSH package rather than forcing a fuzzy restoration.
 
