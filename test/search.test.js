@@ -162,5 +162,14 @@ test("TAVILY_ADVANCED_CONTROLS documents the full patched surface", () => {
 		"exclude_domains",
 		"include_answer",
 		"include_raw_content",
+		"chunks_per_source",
+		"start_date",
+		"end_date",
+		"country",
+		"include_images",
+		"include_image_descriptions",
+		"include_favicon",
+		"auto_parameters",
+		"include_usage",
 	]);
 });

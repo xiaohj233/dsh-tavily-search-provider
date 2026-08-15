@@ -82,6 +82,18 @@ The Tavily API receives the query and enabled search controls. `include_raw_cont
 
 The API key is present only in browser draft state and the `credentials.set` request created by this package; it is not stored in the plugin settings section, tool results, normal logs, or status responses.
 
+## Network resilience (DNS poisoning / fake-IP)
+
+On machines where Clash/mihomo takes over DNS in fake-ip mode, the system resolver can intermittently hand `api.tavily.com` a fake `198.18.x.x` address (or an upstream-poisoned answer), so a plain `fetch` connects into a black hole and times out — while the real IPs stay reachable.
+
+Since v0.3.5 every Tavily endpoint (search/extract/map/crawl/deep-research) goes through a built-in resilient network layer:
+
+1. Resolve real A records over plain-HTTPS DoH first (AliDNS, DNSPod, Google), filtering out fake-ip/private/reserved addresses;
+2. If DoH is unreachable, query DoH servers by IP literal (8.8.8.8 / 223.5.5.5), bypassing the system resolver entirely;
+3. Only then fall back to the system resolver; if everything fails, fall back to a plain `fetch` (old behavior).
+
+Requests pin the TCP connection to a verified public IP while keeping the real TLS SNI and Host header, so searches keep working while DNS is poisoned. Resolutions are cached for 5 minutes (30 s failure backoff, stale entries kept for up to an hour as a last resort). If even DoH is unavailable (total outage), network error messages carry a fake-IP troubleshooting hint.
+
 ## Tests
 
 ```sh

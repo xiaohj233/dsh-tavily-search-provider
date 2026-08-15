@@ -1,0 +1,12 @@
+# The patch engine (lib/installed-patches.mjs) matches anchors byte-exactly
+# against the official rc.6 packages, whose files use LF. Every text file in
+# this repo (including the byte-exact test fixtures) must therefore stay LF
+# on every platform; git must never convert them to CRLF on checkout.
+* text=auto eol=lf
+
+# Explicitly binary formats (defensive; nothing here is actually binary).
+*.tgz binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary

@@ -35,7 +35,16 @@ function parseSearchArgs(args) {
 		...args.include_domains !== void 0 ? { include_domains: args.include_domains } : {},
 		...args.exclude_domains !== void 0 ? { exclude_domains: args.exclude_domains } : {},
 		...args.include_answer !== void 0 ? { include_answer: args.include_answer } : {},
-		...args.include_raw_content !== void 0 ? { include_raw_content: args.include_raw_content } : {}
+		...args.include_raw_content !== void 0 ? { include_raw_content: args.include_raw_content } : {},
+		...args.chunks_per_source !== void 0 ? { chunks_per_source: args.chunks_per_source } : {},
+		...args.start_date !== void 0 ? { start_date: args.start_date } : {},
+		...args.end_date !== void 0 ? { end_date: args.end_date } : {},
+		...args.country !== void 0 ? { country: args.country } : {},
+		...args.include_images !== void 0 ? { include_images: args.include_images } : {},
+		...args.include_image_descriptions !== void 0 ? { include_image_descriptions: args.include_image_descriptions } : {},
+		...args.include_favicon !== void 0 ? { include_favicon: args.include_favicon } : {},
+		...args.auto_parameters !== void 0 ? { auto_parameters: args.auto_parameters } : {},
+		...args.include_usage !== void 0 ? { include_usage: args.include_usage } : {}
 	};
 }
 /** Display label for a source: its title, else its hostname. */
@@ -186,7 +195,7 @@ function applyWebSearchTool(ctx, maxResults, timeoutMs, fetchEnabled) {
 		order: 110,
 		text: (fetchEnabled ? "Use the web_search tool to discover current information on the web. It returns an optional answer plus a list of source URLs. Follow up with web_fetch when you need the full content of a specific result, and cite the relevant URLs as markdown links." : "Use the web_search tool to discover current information on the web. It returns an optional answer plus a list of source URLs. Use the returned source snippets when available, and cite the relevant URLs as markdown links.") + `
 
-The tool supports Tavily's retrieval controls when the Tavily backend is active (they are ignored otherwise):
+The tool supports Tavily's retrieval controls:
 - search_depth: "basic" (fast summaries) | "advanced" (reranked chunks, higher relevance) | "fast" | "ultra-fast".
 - topic: "general" | "news" (recent news) | "finance".
 - time_range: "day" | "week" | "month" | "year" — only results published in this window.
@@ -194,12 +203,13 @@ The tool supports Tavily's retrieval controls when the Tavily backend is active 
 - include_domains / exclude_domains: restrict or exclude domains (wildcards like *.com allowed).
 - include_answer: request an AI-generated answer synthesized from the results (default true).
 - include_raw_content: include full page content for each result (expensive; off by default).
+- chunks_per_source, start_date/end_date, country, include_images (+include_image_descriptions), include_favicon, auto_parameters, include_usage: additional Tavily controls — see the API reference.
 
 Usage guidance: use topic/time_range for recency-sensitive queries, include_domains to scope to authoritative sources, and advanced depth for research-heavy questions. API reference: https://docs.tavily.com/documentation/api-reference/endpoint/search`
 	});
 	ctx.tools.register(defineTool({
 		name: "web_search",
-		description: "Search the web for current information. Returns an optional summary answer and a list of source URLs. When the Tavily backend is enabled, supports retrieval controls: search_depth, topic (general/news/finance), time_range (day/week/month/year), max_results, include_domains/exclude_domains, include_answer, include_raw_content.",
+		description: "Tavily web search: precise web retrieval with configurable depth, topic, recency, and domain filters. Returns an optional AI-synthesized answer plus a list of source URLs with snippets. Supports the full Tavily parameter surface: search_depth (basic/advanced/fast/ultra-fast), topic (general/news/finance), time_range (day/week/month/year), max_results (1-20), include_domains/exclude_domains, include_answer, include_raw_content (full page text; expensive).",
 		parameters: {
 			query: {
 				type: "string",
@@ -242,6 +252,42 @@ Usage guidance: use topic/time_range for recency-sensitive queries, include_doma
 			include_raw_content: {
 				type: "boolean",
 				description: "Include the full page content for each result (default false; expensive). Tavily backend only."
+			},
+			chunks_per_source: {
+				type: "integer",
+				description: "Chunks per source, 1-5, only used with advanced/fast search_depth (each chunk max 500 chars). Tavily backend only."
+			},
+			start_date: {
+				type: "string",
+				description: "Only results published after this date (YYYY-MM-DD). Tavily backend only."
+			},
+			end_date: {
+				type: "string",
+				description: "Only results published before this date (YYYY-MM-DD). Tavily backend only."
+			},
+			country: {
+				type: "string",
+				description: "Boost results from a specific country (e.g. 'united states'). Tavily backend only."
+			},
+			include_images: {
+				type: "boolean",
+				description: "Include image results. Tavily backend only."
+			},
+			include_image_descriptions: {
+				type: "boolean",
+				description: "Include AI descriptions for image results (requires include_images). Tavily backend only."
+			},
+			include_favicon: {
+				type: "boolean",
+				description: "Include the favicon URL per result. Tavily backend only."
+			},
+			auto_parameters: {
+				type: "boolean",
+				description: "Auto-configure search parameters from query intent (may raise search_depth to advanced = 2 credits). Tavily backend only."
+			},
+			include_usage: {
+				type: "boolean",
+				description: "Include credit usage info. Tavily backend only."
 			}
 		},
 		output: {
@@ -293,7 +339,16 @@ Usage guidance: use topic/time_range for recency-sensitive queries, include_doma
 				...input.include_domains !== void 0 ? { include_domains: input.include_domains } : {},
 				...input.exclude_domains !== void 0 ? { exclude_domains: input.exclude_domains } : {},
 				...input.include_answer !== void 0 ? { include_answer: input.include_answer } : {},
-				...input.include_raw_content !== void 0 ? { include_raw_content: input.include_raw_content } : {}
+				...input.include_raw_content !== void 0 ? { include_raw_content: input.include_raw_content } : {},
+				...input.chunks_per_source !== void 0 ? { chunks_per_source: input.chunks_per_source } : {},
+				...input.start_date !== void 0 ? { start_date: input.start_date } : {},
+				...input.end_date !== void 0 ? { end_date: input.end_date } : {},
+				...input.country !== void 0 ? { country: input.country } : {},
+				...input.include_images !== void 0 ? { include_images: input.include_images } : {},
+				...input.include_image_descriptions !== void 0 ? { include_image_descriptions: input.include_image_descriptions } : {},
+				...input.include_favicon !== void 0 ? { include_favicon: input.include_favicon } : {},
+				...input.auto_parameters !== void 0 ? { auto_parameters: input.auto_parameters } : {},
+				...input.include_usage !== void 0 ? { include_usage: input.include_usage } : {}
 			}, exec.signal);
 			return {
 				...result.content !== void 0 ? { content: result.content } : {},

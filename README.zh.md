@@ -82,6 +82,18 @@ Tavily API 会收到查询内容与已启用的搜索控件。开启 `include_ra
 
 API 密钥只存在于浏览器草稿状态和本包创建的 `credentials.set` 请求中；它不会被写进插件设置区、工具结果、常规日志或状态响应。
 
+## 网络韧性（DNS 污染 / fake-IP）
+
+在 Clash/mihomo 这类以 fake-IP 模式接管 DNS 的机器上，系统解析器可能把 `api.tavily.com` 间歇性解析到 `198.18.x.x` 假地址（或上游投毒结果），导致裸 `fetch` 连接黑洞、请求超时——而真实 IP 本身始终可达。
+
+本包 v0.3.5 起对 Tavily 全部端点（search/extract/map/crawl/deep-research）使用自带的韧性网络层：
+
+1. 优先通过明文 HTTPS DoH（AliDNS、DNSPod、Google）解析真实 A 记录，过滤掉 fake-IP/私网/保留地址；
+2. DoH 不可达时按 IP 字面量（8.8.8.8 / 223.5.5.5）直查，完全绕开系统 DNS；
+3. 仍失败才回退系统解析器；全部失败时回退普通 `fetch`（行为与旧版一致）。
+
+请求把 TCP 连接钉在验证过的真实 IP 上，同时保留 TLS SNI 与 Host 头，因此 DNS 被污染时搜索依然可用。解析结果缓存 5 分钟（失败 30 秒退避，过期后 1 小时内保留为兜底）。若连 DoH 都不可用（整网断连），网络错误消息会附带 fake-IP 排查提示。
+
 ## 测试
 
 ```sh

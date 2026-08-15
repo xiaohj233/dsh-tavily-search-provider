@@ -1,6 +1,6 @@
 {
   "name": "dsh-tavily-search-provider",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Tavily search provider for DSH with full search-control mapping, credential-backed key UI, and guarded rc.6 compatibility patches.",
   "type": "module",
   "main": "lib/index.js",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "node --test \"test/*.test.js\"",
-    "check": "node --check lib/index.js && node --check lib/client.js && node --check lib/search.mjs && node --check lib/installed-patches.mjs && node --check lib/boot.mjs && node --check bin/restore.mjs"
+    "check": "node --check lib/index.js && node --check lib/client.js && node --check lib/search.mjs && node --check lib/net.mjs && node --check lib/installed-patches.mjs && node --check lib/boot.mjs && node --check bin/restore.mjs"
   },
   "dsh": {
     "bundle": {
