@@ -1,6 +1,6 @@
 {
   "name": "dsh-tavily-search-provider",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Tavily search provider for DSH with full search-control mapping, credential-backed key UI, and guarded rc.6 compatibility patches.",
   "type": "module",
   "main": "lib/index.js",
